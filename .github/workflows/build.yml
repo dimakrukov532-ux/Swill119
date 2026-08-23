@@ -37,12 +37,12 @@ jobs:
         export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
         $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
-        # Устанавливаем NDK 28c
+        # Устанавливаем NDK 28c без лишнего mv
         mkdir -p $HOME/.buildozer/android/platform
         cd $HOME/.buildozer/android/platform
+        rm -rf android-ndk-r28c
         wget https://dl.google.com/android/repository/android-ndk-r28c-linux.zip
         unzip -o android-ndk-r28c-linux.zip
-        mv android-ndk-r28c android-ndk-r28c
 
     - name: Build APK
       run: |
