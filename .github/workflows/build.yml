@@ -22,7 +22,7 @@ jobs:
         sudo apt install -y git zip unzip openjdk-17-jdk
         pip install buildozer
 
-    - name: Set up Android SDK
+    - name: Set up Android SDK and NDK
       run: |
         mkdir -p $HOME/android-sdk
         cd $HOME/android-sdk
@@ -37,11 +37,20 @@ jobs:
         export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
         $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+        # Устанавливаем NDK 28c
+        mkdir -p $HOME/.buildozer/android/platform
+        cd $HOME/.buildozer/android/platform
+        wget https://dl.google.com/android/repository/android-ndk-r28c-linux.zip
+        unzip -o android-ndk-r28c-linux.zip
+        mv android-ndk-r28c android-ndk-r28c
 
     - name: Build APK
       run: |
         export ANDROID_SDK_ROOT=$HOME/android-sdk
         export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+        export ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r28c
+        export ANDROIDAPI=30
+        export ANDROIDMINAPI=21
         buildozer android debug deploy run
 
     - name: Upload APK
