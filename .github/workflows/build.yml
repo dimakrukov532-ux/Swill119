@@ -52,6 +52,8 @@ jobs:
         export ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r28c
         export ANDROIDAPI=30
         export ANDROIDMINAPI=21
+        export CFLAGS="-I/usr/include"
+        export LDFLAGS="-L/usr/lib"
         buildozer android debug deploy run
 
     - name: Upload APK
