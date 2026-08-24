@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4   # было v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v5   # было v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
@@ -20,6 +20,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk
+        sudo apt install -y libtool autoconf automake
         pip install buildozer
 
     - name: Set up Android SDK and NDK
@@ -37,12 +38,12 @@ jobs:
         export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
         $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
-        # Устанавливаем NDK 28c
         mkdir -p $HOME/.buildozer/android/platform
         cd $HOME/.buildozer/android/platform
         rm -rf android-ndk-r28c
         wget https://dl.google.com/android/repository/android-ndk-r28c-linux.zip
         unzip -o android-ndk-r28c-linux.zip
+        rm -rf $HOME/.buildozer/cache
 
     - name: Build APK
       run: |
