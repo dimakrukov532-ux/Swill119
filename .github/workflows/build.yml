@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4   # было v3
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5   # было v4
       with:
         python-version: '3.10'
 
@@ -37,7 +37,7 @@ jobs:
         export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
         $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
-        # Устанавливаем NDK 28c в правильное место
+        # Устанавливаем NDK 28c
         mkdir -p $HOME/.buildozer/android/platform
         cd $HOME/.buildozer/android/platform
         rm -rf android-ndk-r28c
