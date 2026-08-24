@@ -1,4 +1,4 @@
-name: Build APK
+name: Build APK (p4a)
 
 on:
   push:
@@ -20,10 +20,9 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk
-        sudo apt install -y libtool autoconf automake
-        pip install buildozer
+        pip install python-for-android
 
-    - name: Set up Android SDK and NDK
+    - name: Set up Android SDK
       run: |
         mkdir -p $HOME/android-sdk
         cd $HOME/android-sdk
@@ -31,30 +30,16 @@ jobs:
         unzip -o commandlinetools-linux-11076708_latest.zip
         mkdir -p cmdline-tools/latest
         mv cmdline-tools/* cmdline-tools/latest/ || true
-        mkdir -p tools/bin
-        ln -sf $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager $HOME/android-sdk/tools/bin/sdkmanager
-        ln -sf $HOME/android-sdk/cmdline-tools/latest/bin/avdmanager $HOME/android-sdk/tools/bin/avdmanager
         export ANDROID_SDK_ROOT=$HOME/android-sdk
         export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
         $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
-        mkdir -p $HOME/.buildozer/android/platform
-        cd $HOME/.buildozer/android/platform
-        rm -rf android-ndk-r28c
-        wget https://dl.google.com/android/repository/android-ndk-r28c-linux.zip
-        unzip -o android-ndk-r28c-linux.zip
-        rm -rf $HOME/.buildozer/cache
 
     - name: Build APK
       run: |
         export ANDROID_SDK_ROOT=$HOME/android-sdk
         export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
-        export ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r28c
-        export ANDROIDAPI=30
-        export ANDROIDMINAPI=21
-        export CFLAGS="-I/usr/include"
-        export LDFLAGS="-L/usr/lib"
-        buildozer android debug deploy run
+        p4a apk --requirements=flask,requests,telebot --private=./ --package=org.swill --name=SWILL --version=1.0 --bootstrap=flask --port=8443
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
